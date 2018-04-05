@@ -1,12 +1,14 @@
 fileFormatVersion: 2
 guid: a3e4e91508808fe49aa8cdada4b96b0e
-timeCreated: 1522883666
+timeCreated: 1522968162
 licenseType: Free
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
   - mainEngine: {fileID: 8300000, guid: 03cadef257d942e49a428d0ad082cc73, type: 3}
+  - explode: {fileID: 8300000, guid: 6202ddb346aa5ed4892e4805283825f7, type: 3}
+  - startChime: {fileID: 8300000, guid: 98676984f5e270f40aae8c30414dd40c, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

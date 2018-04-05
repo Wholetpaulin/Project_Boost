@@ -11,8 +11,10 @@ public class Rocket : MonoBehaviour {
     [SerializeField] float mainThrust = 10f;
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip explode;
-    [SerializeField] AudioClip startChime;
-
+    [SerializeField] AudioClip success;
+    [SerializeField] ParticleSystem mainEngineParticles;
+    [SerializeField] ParticleSystem explodeParticles;
+    [SerializeField] ParticleSystem successParticles;
 
     enum State { Alive, Dying, Transcending }
     [SerializeField] State state = State.Alive;
@@ -26,7 +28,6 @@ public class Rocket : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        // todo somewhere stop sound on death
         if (state == State.Alive)
         {
             RespondToThrustInput();
@@ -44,16 +45,32 @@ public class Rocket : MonoBehaviour {
                 //do nothing
                 break;
             case "Finish":
-                print("Hit finish");
-                state = State.Transcending;
-                Invoke("LoadNextScene", 1f);    // This coroutine waits 1 second before executing method
+                StartSuccess();
                 break;
             default:
-                print("You're dead as shit!");
-                state = State.Dying;
-                Invoke("ResetScene", 1f);
+                StartDeath();
                 break;
         }
+    }
+
+    private void StartDeath()
+    {
+        // print("You're dead as shit!");
+        state = State.Dying;
+        audio.Stop();
+        audio.PlayOneShot(explode);
+        explodeParticles.Play();
+        Invoke("ResetScene", 1f);
+    }
+
+    private void StartSuccess()
+    {
+        // print("Hit finish");
+        state = State.Transcending;
+        audio.Stop();
+        audio.PlayOneShot(success);
+        successParticles.Play();
+        Invoke("LoadNextScene", 1f);    // This coroutine waits 1 second before executing method
     }
 
     private void LoadNextScene()
@@ -63,7 +80,6 @@ public class Rocket : MonoBehaviour {
 
     private void ResetScene()
     {
-        audio.PlayOneShot(startChime);
         SceneManager.LoadScene(0);
     }
 
@@ -95,15 +111,17 @@ public class Rocket : MonoBehaviour {
         else
         {
             audio.Pause();
+            mainEngineParticles.Stop();
         }
     }
 
     private void ApplyThrust()
     {
+        rigidBody.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
         if (!audio.isPlaying)
         {
             audio.PlayOneShot(mainEngine);
         }
-        rigidBody.AddRelativeForce(Vector3.up * mainThrust);
+        mainEngineParticles.Play();
     }
 }
