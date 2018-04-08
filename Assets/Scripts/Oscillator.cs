@@ -11,8 +11,7 @@ public class Oscillator : MonoBehaviour {
 
     Vector3 startingPos; // Needed for absolute movement storage
 
-    // todo: remove from inspector later
-    [Range(0, 1)][SerializeField] float movementFactor; // 0 for not moved 1 for moved fully
+    float movementFactor; // 0 for not moved 1 for moved fully
 
 	// Use this for initialization
 	void Start () {
@@ -22,6 +21,7 @@ public class Oscillator : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        if(period <= Mathf.Epsilon) { return; } // Protects against period is zero
         float cycles = Time.time / period;  // grows continually from 0
 
         const float tau = 2 * Mathf.PI;     // about 6.28

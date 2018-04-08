@@ -9,6 +9,8 @@ public class Rocket : MonoBehaviour {
     AudioSource audio;
     [SerializeField] float rcsThrust = 250f;
     [SerializeField] float mainThrust = 10f;
+    [SerializeField] float levelLoadDelay = 2f;
+
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip explode;
     [SerializeField] AudioClip success;
@@ -17,6 +19,7 @@ public class Rocket : MonoBehaviour {
     [SerializeField] ParticleSystem successParticles;
 
     enum State { Alive, Dying, Transcending }
+    bool collisionsDisabled = false;
     [SerializeField] State state = State.Alive;
 
 
@@ -33,12 +36,28 @@ public class Rocket : MonoBehaviour {
             RespondToThrustInput();
             RespondToRotateInput();
         }
-
-	}
+        if (Debug.isDebugBuild)
+        {
+            RespondToDebugKeys();
+        }
+    }
+    private void RespondToDebugKeys()
+    {
+        //Load next level if L key is pressed
+        if (Input.GetKey(KeyCode.L))
+        {
+            LoadNextScene();
+        }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            //toggle collision
+            collisionsDisabled = !collisionsDisabled;   //This is a toggle!
+        }
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (state != State.Alive) { return; }
+        if (state != State.Alive || collisionsDisabled) { return; }
         switch(collision.gameObject.tag)
         { 
             case "Friendly":
@@ -60,7 +79,7 @@ public class Rocket : MonoBehaviour {
         audio.Stop();
         audio.PlayOneShot(explode);
         explodeParticles.Play();
-        Invoke("ResetScene", 1f);
+        Invoke("ResetScene", levelLoadDelay);
     }
 
     private void StartSuccess()
@@ -70,7 +89,7 @@ public class Rocket : MonoBehaviour {
         audio.Stop();
         audio.PlayOneShot(success);
         successParticles.Play();
-        Invoke("LoadNextScene", 1f);    // This coroutine waits 1 second before executing method
+        Invoke("LoadNextScene", levelLoadDelay);    // This coroutine waits 1 second before executing method
     }
 
     private void LoadNextScene()
