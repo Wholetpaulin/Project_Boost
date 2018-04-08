@@ -7,9 +7,9 @@ This is a mobile rocketship game I created following a lesson of the Udemy cours
 
 1. Click on the designated link:  https://wholetpaulin.github.io/Project_Boost/   (Wait for game to load up)
 
-2. 
+2. Use the A and D key to rotate your rocket.  Use the SPACE key to boost.
 
-3. 
+3. Land your rocket on the green platforms to win, but watch out for the red obstacles!
 
 
 ### One More Thing
